@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streamlit Builder</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
+  <div class="layout">
+    <aside class="panel chat-panel">
+      <header>
+        <h1>Streamlit Builder</h1>
+        <p>Describe the app you want. We'll generate Streamlit code for you.</p>
+      </header>
+      <section id="chat-history" class="chat-history">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="chat-message {{ message.role }}">
+              <span class="role">{{ message.role|title }}</span>
+              <p>{{ message.content }}</p>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="chat-message assistant">
+            <span class="role">Assistant</span>
+            <p>Start by describing your Streamlit app idea.</p>
+          </div>
+        {% endif %}
+      </section>
+      <form id="chat-form" class="chat-form">
+        {% csrf_token %}
+        <textarea id="chat-input" name="message" rows="4" placeholder="e.g. Build a KPI dashboard with filters..."></textarea>
+        <div class="actions">
+          <button type="submit">Generate</button>
+          <a class="secondary" href="{% url 'download_bundle' %}">Download Code</a>
+        </div>
+      </form>
+    </aside>
+    <main class="panel code-panel">
+      <header>
+        <h2>Streamlit Preview</h2>
+        <p>Generated code appears here.</p>
+      </header>
+      <pre id="code-output"><code>{{ streamlit_code }}</code></pre>
+    </main>
+  </div>
+  <script src="{% static 'app.js' %}"></script>
+</body>
+</html>
